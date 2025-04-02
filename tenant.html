@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Details | Building Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .avatar-preview {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+        .file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body class="h-full bg-gray-100 flex flex-col">
+    <header class="bg-blue-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Tenant Details</h1>
+            <a href="floors.html" class="text-white hover:text-blue-200 transition-all">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4">
+        <form id="tenantForm" class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold mb-2" for="tenantName">
+                    Tenant Name
+                </label>
+                <input class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                       id="tenantName" type="text" placeholder="Enter tenant name" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold mb-2" for="phoneNumber">
+                    Phone Number
+                </label>
+                <input class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                       id="phoneNumber" type="tel" placeholder="Enter phone number">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold mb-2" for="moveInDate">
+                    Move-in Date
+                </label>
+                <input class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                       id="moveInDate" type="date">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-gray-700 font-bold mb-2" for="rentAmount">
+                    Rent Amount ($)
+                </label>
+                <input class="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                       id="rentAmount" type="number" min="0" step="0.01" placeholder="Enter monthly rent">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-700 font-bold mb-2">
+                    Tenant Photo
+                </label>
+                <div class="flex flex-col items-center">
+                    <img id="avatarPreview" src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg" 
+                         class="avatar-preview mb-2 cursor-pointer" alt="Tenant preview">
+                    <input type="file" id="avatarInput" class="file-input" accept="image/*">
+                    <button type="button" id="changeAvatarBtn" 
+                            class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded">
+                        <i class="fas fa-user-edit mr-2"></i>Upload Photo
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex justify-between">
+                <button type="button" id="addAnotherBtn"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded transition-all">
+                    <i class="fas fa-plus mr-2"></i>Add Another
+                </button>
+                <button type="submit" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded transition-all">
+                    Save & View Overview <i class="fas fa-home ml-2"></i>
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        // Avatar upload functionality
+        document.getElementById('changeAvatarBtn').addEventListener('click', () => {
+            document.getElementById('avatarInput').click();
+        });
+
+        document.getElementById('avatarInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    document.getElementById('avatarPreview').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Form submission
+        document.getElementById('tenantForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const tenant = {
+                name: document.getElementById('tenantName').value,
+                phone: document.getElementById('phoneNumber').value,
+                moveInDate: document.getElementById('moveInDate').value,
+                rent: document.getElementById('rentAmount').value,
+                photo: document.getElementById('avatarPreview').src
+            };
+            
+            // Get existing residence data
+            const residence = JSON.parse(localStorage.getItem('currentResidence'));
+            
+            // Initialize tenants array if it doesn't exist
+            if (!residence.tenants) {
+                residence.tenants = [];
+            }
+            
+            // Add new tenant
+            residence.tenants.push(tenant);
+            
+            // Save back to localStorage
+            localStorage.setItem('currentResidence', JSON.stringify(residence));
+            
+            // Redirect to overview
+            window.location.href = 'overview.html';
+        });
+
+        // Add another tenant
+        document.getElementById('addAnotherBtn').addEventListener('click', () => {
+            document.getElementById('tenantForm').dispatchEvent(new Event('submit'));
+            document.getElementById('tenantForm').reset();
+            document.getElementById('avatarPreview').src = 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg';
+        });
+
+        // Dark mode check
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+            document.body.classList.add('bg-gray-900');
+            document.body.classList.remove('bg-gray-100');
+        }
+    </script>
+</body>
+</html>
