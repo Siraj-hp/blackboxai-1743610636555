@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .btn-hover:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="h-full bg-gray-100 flex flex-col">
+    <header class="bg-blue-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Building Manager</h1>
+            <a href="settings.html" class="text-white hover:text-blue-200 transition-all">
+                <i class="fas fa-cog text-xl"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4">
+        <div class="text-center">
+            <button id="addHomeBtn" class="btn-hover transition-all bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full text-xl shadow-lg">
+                <i class="fas fa-home mr-2"></i> Add Homes
+            </button>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('addHomeBtn').addEventListener('click', () => {
+            window.location.href = 'add-residence.html';
+        });
+
+        // Check for dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.documentElement.classList.add('dark');
+            document.body.classList.add('bg-gray-900');
+            document.body.classList.remove('bg-gray-100');
+        }
+    </script>
+</body>
+</html>
